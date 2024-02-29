@@ -25,7 +25,7 @@ The above function will conduct a snowball sample of Reddit users by collecting 
 
 A full and annotated example that goes from a list of seed subreddits to a snowball sample of Reddit comments can be found in this [script](https://github.com/ReedMerrill/sampleReddit-example-files/blob/main/scripts/example-comment-sampling.py).
 
-**Note:** Any access to the Reddit API also requires an application that is registered with Reddit via their developer portal. Aftet that, the `setup_access` function can be used to create an authenticated Reddit API instance. For instructions on how to set up a registered Reddit API application, refer to [this guide](https://praw.readthedocs.io/en/stable/getting_started/authentication.html#password-flow). You will need a regular Reddit user account to complete the setup.
+**Note:** Any access to the Reddit API also requires an application that is registered with Reddit via their developer portal. Aftet that, the `setup_access` function can be used to create an authenticated Reddit API instance. For instructions on how to set up a registered Reddit API application, refer to [this guide](https://github.com/reddit-archive/reddit/wiki/OAuth2-App-Types#script-app). You will need a regular Reddit user account to complete the setup.
 
 ## Installation
 
