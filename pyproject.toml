@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sampleReddit"
+version = "0.1.0"
+authors = [
+  { name="Reed Merrill", email="reedjmerrill@gmail.com" },
+]
+description = "Take snowball samples of Reddit data"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: 3-Clause BSD License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/ReedMerrill/sampleReddit"
+Issues = "https://github.com/ReedMerrill/sampleReddit/issues"
