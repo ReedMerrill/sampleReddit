@@ -4,6 +4,14 @@ A streamlined interface for generating snowball samples of Reddit data.
 
 Snowball sampling is a data collection method that starts with a small set of seeds and iteratively collects data from their connections. This method is particularly useful for collecting data from social media platforms, where the connections between users and communities are a primary interest. sampleReddit also outputs full documentation of each sampling process.
 
+## Installation
+
+sampleReddit can be installed from PyPI using pip:
+
+```bash
+pip install sampleReddit
+```
+
 ## Quick Start
 
 An annotated example of how to go from a list of seed subreddits to a snowball sample of Reddit comments can be found in this [script](https://github.com/ReedMerrill/sampleReddit-example-files/blob/main/scripts/example-comment-sampling.py).
@@ -28,14 +36,6 @@ sampling_frame, users_df = sr.sample_reddit(
 The above function will conduct a snowball sample of Reddit users by collecting the top 3 posts from the "politics" and "news" subreddits from the past year and then collecting the usernames of all the users who commented on those posts. The function returns two objects: a Python dictionary object with the sampling frame and a pandas DataFrame with single column called "users" that lists the users who were sampled.
 
 **Note:** Any access to the Reddit API also requires an application that is registered with Reddit via their developer portal. Aftet that, the `setup_access` function can be used to create an authenticated Reddit API instance. For instructions on how to set up a registered Reddit API application, refer to [this guide](https://github.com/reddit-archive/reddit/wiki/OAuth2-App-Types#script-app). You will need a regular Reddit user account to complete the setup.
-
-## Installation
-
-sampleReddit can be installed from PyPI using pip:
-
-```bash
-pip install sampleReddit
-```
 
 It has been tested on Python 3.10, but should work on 3.6 or later.
 
