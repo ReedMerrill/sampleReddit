@@ -14,6 +14,7 @@ import re
 import string
 import emojis
 import praw
+from datetime import datetime
 import pandas as pd
 from langdetect import detect_langs
 from prawcore.exceptions import TooManyRequests
@@ -22,7 +23,7 @@ from prawcore.exceptions import TooManyRequests
 def setup_access(client_id, client_secret, password, user_agent, username):
     """Create an instance for API access"""
 
-    print("Initializing API Instance.")
+    print("API Instance initialized.")
 
     instance = praw.Reddit(
         client_id=client_id,
@@ -34,7 +35,9 @@ def setup_access(client_id, client_secret, password, user_agent, username):
     return instance
 
 
-def get_top_posts(reddit, subreddit_name, time_period, n_submissions):
+def get_posts_list(
+    api_instance, subreddit_name, post_filter: str, time_period, n_posts
+):
     """Takes the name of a subreddit, a time period, and the desired number of submissions
     and returns a list of the URLs of that subreddit's top posts.
 
@@ -43,12 +46,26 @@ def get_top_posts(reddit, subreddit_name, time_period, n_submissions):
     and is more efficient.
     Returns: list of top post URLs
     """
-    # create the generator
-    submission_generator = reddit.subreddit(subreddit_name).top(
-        time_filter=time_period, limit=n_submissions
-    )
-    # return generator outputs as a list
-    return [submission.id for submission in submission_generator]
+    # conditions for the filter type
+    if post_filter == "top":
+        # create the generator
+        submission_generator = api_instance.subreddit(subreddit_name).top(
+            time_filter=time_period, limit=n_posts
+        )
+        # return generator outputs as a list
+        return [str(submission.id) for submission in submission_generator]
+
+    elif post_filter == "new":
+        submission_generator = api_instance.subreddit(subreddit_name).new(
+            time_filter=time_period, limit=n_posts
+        )
+        return [str(submission.id) for submission in submission_generator]
+
+    elif post_filter == "hot":
+        submission_generator = api_instance.subreddit(subreddit_name).hot(
+            time_filter=time_period, limit=n_posts
+        )
+        return [str(submission.id) for submission in submission_generator]
 
 
 def get_post_comments_ids(reddit, submission_id):
@@ -64,6 +81,79 @@ def get_post_comments_ids(reddit, submission_id):
 def get_comment_author(reddit, comment_id):
     """Takes a comment ID and return that comment's author."""
     return str(reddit.comment(comment_id).author)
+
+
+def sample_reddit(
+    api_instance, seed_subreddits, post_filter, time_period, n_posts, log_file_path
+):
+    """Generate a snowball sample from a list of subreddits. From the subreddits, get a
+    list `n_submissions` number of of posts from `time_period`. From each post, get a list of
+    comments and from each comment, get the author. Write the author to a CSV and return a
+    dictionary that maps the subreddit to the posts, the posts to the comments, and the comments
+    to the authors.
+
+    Inputs:
+    - api_instance: a PRAW instance
+    - seed_subreddits: a list of subreddit names
+    - time_period: a string representing the time period to sample from
+    - n_submissions: the number of submissions to sample from each subreddit
+    - output_path: the path to the output directory
+    Returns: a dictionary with the following keys
+    - subreddits_to_posts: a dictionary mapping subreddit names to lists of post IDs
+    - posts_to_comments: a dictionary mapping post IDs to lists of comment IDs
+    - comments_to_users: a dictionary mapping comment IDs to usernames
+    - users: a dictionary with a single key "users" mapping to a list of usernames
+    """
+    start_time = time.time()
+
+    # initialize sample logging dicts
+    subreddits_to_posts = {}
+    posts_to_comments = {}
+    comments_to_users = {}
+    users = {"users": []}
+
+    # iterate through the seed subreddits, getting a list of top posts IDs
+    for seed in seed_subreddits:
+
+        posts = get_posts_list(
+            api_instance=api_instance,
+            subreddit_name=seed,
+            post_filter=post_filter,
+            time_period=time_period,
+            n_posts=n_posts,
+        )
+
+        # add a key "seed" with the post IDs as items
+        subreddits_to_posts.update({seed: posts})
+
+        # iterate through the posts, retreiving their comment IDs
+        for i, post in enumerate(posts):
+            comments = get_post_comments_ids(reddit=api_instance, submission_id=post)
+            posts_to_comments.update({post: comments})
+
+            # iterate through the comments, retreiving each one's author
+            for comment in comments:
+                user = get_comment_author(reddit=api_instance, comment_id=comment)
+                # add the new comment/user pair to the dict
+                comments_to_users.update({comment: user})
+                # append user/comment pair to dict
+                users["users"].append(user)
+
+                time.sleep(0.5)
+            # logging
+            log_string = f'{datetime.now()} - Finished Post {i + 1} of seed "{seed}"\n'
+            log_to_file(f"{log_file_path}sample_log{datetime.now()}.txt", log_string)
+
+    output_dict = {
+        "subreddits_to_posts": subreddits_to_posts,
+        "posts_to_comments": posts_to_comments,
+        "comments_to_users": comments_to_users,
+        "users": users["users"],
+    }
+
+    print(f"Sample complete. Time elapsed: {(time.time() - start_time) / 60} minutes")
+
+    return output_dict, users
 
 
 def get_user_comments(
@@ -130,7 +220,7 @@ def get_user_comments(
         # if a TooManyRequsts error is raised then the API rate limit has been exceeded.
         # Retry after sleeping. Sleep duration increases by a factor of 2 for 3 retries.
         except TooManyRequests as e:
-            utils.log_to_file(
+            log_to_file(
                 log_path, f"Error: {e} while fetching one of {user_id}'s comments\n"
             )
             print(f"Error: {e} while fetching user {user_id}")
@@ -140,12 +230,51 @@ def get_user_comments(
 
         # catch all other possible exceptions and break retry loop
         except Exception as e:
-            utils.log_to_file(
+            log_to_file(
                 log_path,
                 f'Unresolved Error: "{e}" while fetching one of {user_id}\'s comments\n',
             )
             print(f'Error: "{e}" while fetching user {user_id}')
             break
+
+
+def get_comments(
+    api_instance,
+    input_path,
+    output_path,
+    log_path,
+    comment_limit=1000,
+):
+    """Gets an API instance, cleans the usernames, fetches all comments for
+    each user, then fetches each comment's metadata.
+    """
+    # initialize log file
+    start_time = time.time()
+    log_to_file(log_path, f"{datetime.now()} - Begin Fetching comments...\n")
+    # setup a PRAW reddit instance
+    # read in users subset
+    users = pd.read_csv(input_path)
+    users_list = list(users["users"])
+    # iterate over list of user, extracting each user's comment metadata
+    for i, user in enumerate(users_list):
+        # initialize dict to store a single user's comments
+        # make comment metadata dict using reddit API
+        get_user_comments(
+            reddit=api_instance,
+            user_id=user,
+            limit=comment_limit,
+            out_file_path=output_path,
+            log_path=log_path,
+        )
+        estimate = estimate_time_remaining(
+            task_index=i, total_tasks=len(users_list), start_time=start_time
+        )
+        print(f"Finished collecting comment data for user {i + 1}")
+        print(f"Time remaining: ~{estimate} hours")
+    # final logging
+    total_time_hours = (time.time() - start_time) / 3600
+    print(f"Total Time Elapsed: {total_time_hours}")
+    log_to_file(log_path, f"Total Time Elapsed: {total_time_hours}")
 
 
 def get_user_metadata(
@@ -194,7 +323,7 @@ def get_user_metadata(
         # if a TooManyRequsts error is raised then the API rate limit has been exceeded.
         # Retry after sleeping. Sleep duration increases by a factor of 2 for 4 retries.
         except TooManyRequests as e:
-            utils.log_to_file(
+            log_to_file(
                 log_path, f'Error: {e} while fetching metadata for "{user_id}\n"'
             )
             print(f'Error: {e} while fetching metadata for "{user_id}"')
@@ -204,7 +333,7 @@ def get_user_metadata(
 
         # catch all other possible exceptions and break retry loop
         except Exception as e:
-            utils.log_to_file(
+            log_to_file(
                 log_path,
                 f'Unresolved Error: "{e}" while fetching "{user_id}"\'s metadata\n',
             )
