@@ -9,7 +9,7 @@ Snowball sampling is a data collection method that starts with a small set of se
 The core functionality of sampleReddit resides in the `sample_reddit` function:
 
 ```python
-from sampleReddit import sample_reddit
+import sampleReddit as sr
 
 sampling_frame, users_df = sr.sample_reddit(
     api_instance=instance,
