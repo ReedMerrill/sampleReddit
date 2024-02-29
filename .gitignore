@@ -1,1 +1,3 @@
 dist/*
+.env
+src/sampleReddit/__pycache__/*
