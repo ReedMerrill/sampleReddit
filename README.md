@@ -21,11 +21,11 @@ sampling_frame, users_df = sr.sample_reddit(
 )
 ```
 
-The above function will conduct a snowball of Reddit users by collecting the top 3 posts from the "politics" and "news" subreddits from the past year, and then collecting the usernames of all the users who commented on those posts. The function returns a Python dictionary object with the sampling frame and a pandas DataFrame with the list of the users who were sampled.
+The above function will conduct a snowball sample of Reddit users by collecting the top 3 posts from the "politics" and "news" subreddits from the past year and then collecting the usernames of all the users who commented on those posts. The function returns two objects: a Python dictionary object with the sampling frame and a pandas DataFrame with single column called "users" that lists the users who were sampled.
 
-A full and annotated example that goes from a list of seed subreddits to a snowball sample of Reddit comments can be found in the [example script](https://github.com/ReedMerrill/sampleReddit-example-files/blob/main/scripts/example-comment-sampling.py).
+A full and annotated example that goes from a list of seed subreddits to a snowball sample of Reddit comments can be found in this [script](https://github.com/ReedMerrill/sampleReddit-example-files/blob/main/scripts/example-comment-sampling.py).
 
-Any access to the Reddit API requires a Reddit account and a registered application. The `setup_access` function can be used to create an authenticated Reddit API instance. For instructions on how to set up access to the Reddit API, refer to [this guide](https://praw.readthedocs.io/en/stable/getting_started/authentication.html#password-flow). You will also need a regular Reddit to before you can complete the setup.
+**Note:** Any access to the Reddit API also requires an application that registered with Reddit via their developer portal. The `setup_access` function can be used to create an authenticated Reddit API instance. For instructions on how to set up access to the Reddit API, refer to [this guide](https://praw.readthedocs.io/en/stable/getting_started/authentication.html#password-flow). You will need a regular Reddit user account to complete the setup.
 
 ## Installation
 
