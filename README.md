@@ -35,6 +35,8 @@ sampling_frame, users_df = sr.sample_reddit(
 
 The above function will conduct a snowball sample of Reddit users by collecting the top 3 posts from the "politics" and "news" subreddits from the past year and then collecting the usernames of all the users who commented on those posts. The function returns two objects: a Python dictionary object with the sampling frame and a pandas DataFrame with single column called "users" that lists the users who were sampled.
 
+The packages also provides lower-level functions that only sample posts from a subreddit, or comments from a list of users. For a full list of functions, see the [documentation](https://github.com/ReedMerrill/sampleReddit/wiki).
+
 **Note:** Any access to the Reddit API also requires an application that is registered with Reddit via their developer portal. Aftet that, the `setup_access` function can be used to create an authenticated Reddit API instance. For instructions on how to set up a registered Reddit API application, refer to [this guide](https://github.com/reddit-archive/reddit/wiki/OAuth2-App-Types#script-app). You will need a regular Reddit user account to complete the setup.
 
 It has been tested on Python 3.10, but should work on 3.6 or later.
