@@ -1,4 +1,4 @@
-# 🫴 sampleReddit: Easily snowball sample Reddit data in Python
+# 🫴 sampleReddit: Easy, documented snowball sampling
 
 sampleReddit provides a streamlined interface for generating documented snowball samples of Reddit data. 
 
