@@ -42,7 +42,7 @@ The library also provides lower-level functions that only sample posts from a su
 
 **Note:** Any access to the Reddit API requires an application that is registered with Reddit via their developer portal. Once your app is registered the `setup_access` function can be used to create an authenticated Reddit API instance. For instructions on how to set up a registered Reddit API application, refer to [this guide](https://github.com/reddit-archive/reddit/wiki/OAuth2-App-Types#script-app).[^1]
 
-[^1] You will need a regular Reddit user account to complete the app authentication setup.
+[^1]: You will need a regular Reddit user account to complete the app authentication setup.
 
 Testing is performed on Python 3.10, but everything should work on 3.6 or later.
 
