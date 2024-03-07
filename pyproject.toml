@@ -4,17 +4,24 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sampleReddit"
-version = "0.1.0"
+version = "0.1.5"
 authors = [
   { name="Reed Merrill", email="reedjmerrill@gmail.com" },
 ]
 description = "Take snowball samples of Reddit data"
+keywords = ["reddit", "data", "snowball", "sample", "praw", "social media"]
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+    "praw",
+    "pandas",
+    "langdetect",
+    "emojis"
 ]
 
 [project.urls]
