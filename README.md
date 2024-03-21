@@ -2,7 +2,7 @@
 
 A streamlined interface for generating snowball samples of Reddit data. 
 
-Snowball sample is a data collection method that starts with a small set of seeds and iteratively collects data that is connected to seed entities. This method is particularly useful for collecting data from social media platforms, where the connections between users and communities are often of primary interest. sampleReddit outputs full documentation of each sampling process.
+Snowball sampling is a data collection method that starts with a small set of seeds and iteratively collects data that is connected to seed entities. This method is particularly useful for collecting data from social media platforms, where the connections between users and communities are often of primary interest. sampleReddit outputs full documentation of each sampling process.
 
 ## Installation
 
