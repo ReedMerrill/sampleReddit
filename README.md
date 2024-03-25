@@ -14,7 +14,7 @@ pip install sampleReddit
 
 ## Quick Start
 
-An annotated example of how to go from a list of seed subreddits to a snowball sample of Reddit comments can be found in this [guide](https://github.com/ReedMerrill/sampleReddit/wiki/Data-Collection-Example) in the repo's wiki.
+An annotated example of how to go from a list of seed subreddits to a snowball sample of Reddit comments can be found in this [guide](https://github.com/ReedMerrill/sampleReddit/wiki/Data-Collection-Example).
 
 ## Usage
 
