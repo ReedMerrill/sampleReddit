@@ -33,7 +33,7 @@ sampling_frame, users_df = sr.sample_reddit(
 )
 ```
 
-This function is the default implementation of a snowball sampling frame used by sampleReddit. It that starts with a list of subreddits as seeds. It then identifies posts from those subreddits, and users who have commented on those posts in order to generate a snowball sample of Reddit users.[^1]
+This function is the default implementation of a snowball sampling frame used by sampleReddit. It starts with a list of subreddits as seeds. It then identifies posts from those subreddits, and users who have commented on those posts in order to generate a snowball sample of Reddit users.[^1]
 
 In the example above the function will collect the usernames of everyone who commented on any of the top 3 posts in the "politics" and "news" subreddits from the past year. The function returns two things:
 
